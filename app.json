@@ -15,14 +15,37 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "LSApplicationQueriesSchemes": [
-          "instagram", "tiktok", "youtube", "twitter", "reddit", "snapchat",
-          "fb", "whatsapp", "nflx", "pinterest", "linkedin", "barcelona", "discord", "telegram"
+          "instagram",
+          "tiktok",
+          "youtube",
+          "twitter",
+          "reddit",
+          "snapchat",
+          "fb",
+          "whatsapp",
+          "nflx",
+          "pinterest",
+          "linkedin",
+          "barcelona",
+          "discord",
+          "telegram"
         ]
       }
     },
     "plugins": [
       "expo-router",
-      ["expo-notifications", { "color": "#5FB59D" }]
-    ]
+      [
+        "expo-notifications",
+        {
+          "color": "#5FB59D"
+        }
+      ]
+    ],
+    "owner": "krosz",
+    "extra": {
+      "eas": {
+        "projectId": "6669c37d-a24f-4e6c-b6e3-db2a85778def"
+      }
+    }
   }
 }
