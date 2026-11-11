@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import * as Notifications from 'expo-notifications';
 import { initialState, useStore } from '@/lib/store';
+import { openCustomerCenter, presentPaywall, restorePurchases, useEntitlement } from '@/lib/revenuecat';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/components/ui';
 import type { AppRule } from '@/lib/logic';
 
@@ -18,6 +19,14 @@ export default function Settings() {
   const { state, update, replace, locked } = useStore();
   const [pin, setPin] = useState('');
   const [msg, setMsg] = useState('');
+  const { active: pro } = useEntitlement();
+  const restore = async () => {
+    try {
+      setMsg((await restorePurchases()) ? 'Klarity Pro is active again.' : 'No Klarity Pro purchase found for this account.');
+    } catch {
+      setMsg("Couldn't restore purchases. Try again.");
+    }
+  };
 
   const setReminder = async (on: boolean) => {
     try {
@@ -152,6 +161,14 @@ export default function Settings() {
           </Row>
         </>
       )}
+
+      <H2>Klarity Pro</H2>
+      {pro ? (
+        <Button label="Manage subscription" kind="ghost" onPress={openCustomerCenter} />
+      ) : (
+        <Button label="Unlock Klarity Pro" onPress={() => presentPaywall('settings')} />
+      )}
+      <Button label="Restore purchases" kind="ghost" onPress={restore} />
 
       <H2>Backup</H2>
       <P dim>Your rules can be saved as text and restored after a reinstall. Send it to yourself in Notes or Messages.</P>
