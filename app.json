@@ -46,6 +46,9 @@
       "eas": {
         "projectId": "6669c37d-a24f-4e6c-b6e3-db2a85778def"
       }
+    },
+    "android": {
+      "package": "com.samayhuf.klarity"
     }
   }
 }

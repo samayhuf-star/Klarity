@@ -6,7 +6,7 @@
 **Price:** Free. No subscription, no in-app purchases.
 **Age rating:** 4+
 **Support URL / contact:** samayhuf@gmail.com
-**Privacy policy URL:** host docs/PRIVACY.md (e.g. GitHub raw/Pages URL) and paste here
+**Privacy policy URL:** https://samayhuf-star.github.io/Qwaeet/privacy.html (host docs/privacy.html on GitHub Pages; not live until Pages is enabled)
 
 ## Promotional text
 A calm pause before the apps you open on autopilot. Free, private, no subscription.
