@@ -5,8 +5,9 @@
 **Category:** Productivity (secondary: Health & Fitness)
 **Price:** Free. No subscription, no in-app purchases.
 **Age rating:** 4+
-**Support URL / contact:** samayhuf@gmail.com
-**Privacy policy URL:** https://samayhuf-star.github.io/Qwaeet/privacy.html (host docs/privacy.html on GitHub Pages; not live until Pages is enabled)
+**Support URL:** https://samayhuf-star.github.io/Qwaeet/support.html
+**Contact:** samayhuf@gmail.com
+**Privacy policy URL:** https://samayhuf-star.github.io/Qwaeet/privacy.html
 
 ## Promotional text
 A calm pause before the apps you open on autopilot. Free, private, no subscription.
@@ -28,7 +29,7 @@ WHAT YOU GET
 - Weekly insights: skips, estimated time kept, top triggers, peak hour
 - A settings lock with a PIN you can give to someone you trust
 - Back up and restore your rules after a reinstall
-- A setup check that tells you if the connection stops working
+- A setup screen that shows “Not connected yet” until Klarity receives its first pause from Shortcuts, then “Connected”
 
 PRIVATE BY DESIGN
 No account. No ads. No tracking. Everything stays on your iPhone. Klarity can't see what you do inside other apps.
@@ -37,7 +38,7 @@ GOOD TO KNOW
 Klarity works through Apple's Shortcuts automations. You are always in control and can turn any automation off in Shortcuts at any time.
 
 ## Keywords (100 chars max)
-screen time,focus,mindful,pause,app limit,habit,digital wellbeing,doomscroll,breathe,self control
+focus,mindful,pause,app limit,habit,digital wellbeing,doomscroll,breathe,self control,awareness
 
 ## What's new (1.0)
 First release.
