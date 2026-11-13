@@ -34,7 +34,7 @@ export const initialState = (): State => ({
   lockUntil: 0,
 });
 
-const KEY = 'qwaeet.state.v1';
+const KEY = 'klarity.state.v1';
 
 type Ctx = {
   state: State;
