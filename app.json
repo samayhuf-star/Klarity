@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Qwaeet",
-    "slug": "qwaeet",
-    "scheme": "qwaeet",
+    "name": "Klarity",
+    "slug": "klarity",
+    "scheme": "klarity",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
