@@ -5,9 +5,15 @@ import { useStore } from '@/lib/store';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen } from '@/components/ui';
 import { CATALOG, newRule } from '@/lib/catalog';
 import { fmtDelay } from '@/lib/logic';
+import { FREE_APP_LIMIT } from '@/lib/config';
+import { usePlus } from '@/lib/purchases';
+
+const openPaywall = () => router.push('/paywall');
 
 export default function Apps() {
   const { state, update, locked } = useStore();
+  const plus = usePlus();
+  const full = !plus && state.rules.length >= FREE_APP_LIMIT;
   const [name, setName] = useState('');
   const [scheme, setScheme] = useState('');
   const have = new Set(state.rules.map((r) => r.id));
@@ -62,16 +68,21 @@ export default function Apps() {
       {available.length > 0 && (
         <>
           <H2>Add an app</H2>
+          {full && <P dim>The free plan covers {FREE_APP_LIMIT} apps. Klarity Pro adds as many as you like.</P>}
           <Row>
             {available.map((a) => (
-              <Chip key={a.id} label={`+ ${a.name}`} on={false} disabled={locked} onPress={() => update((s) => ({ ...s, rules: [...s.rules, newRule(a)] }))} />
+              <Chip key={a.id} label={`+ ${a.name}`} on={false} disabled={locked} onPress={() => (full ? openPaywall() : update((s) => ({ ...s, rules: [...s.rules, newRule(a)] })))} />
             ))}
           </Row>
         </>
       )}
 
       <H2>Add another app</H2>
-      <P dim>Any app with a URL scheme works. Enter its name and scheme (for example "spotify").</P>
+      <P dim>Any app with a URL scheme works. Enter its name and scheme (for example "spotify"). Part of Klarity Pro.</P>
+      {!plus ? (
+        <Button testID="apps-custom-pro" label="Unlock with Klarity Pro" kind="ghost" onPress={openPaywall} />
+      ) : (
+      <>
       <TextInput
         accessibilityLabel="App name"
         placeholder="App name"
@@ -91,6 +102,8 @@ export default function Apps() {
         style={{ color: C.fg, borderColor: C.line, borderWidth: 1, borderRadius: 10, padding: 12, marginVertical: 8, fontSize: 16 }}
       />
       <Button label="Add app" disabled={locked || !name.trim() || !scheme.trim()} onPress={addCustom} />
+      </>
+      )}
     </Screen>
   );
 }

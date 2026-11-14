@@ -22,6 +22,7 @@ export default function Today() {
 
   return (
     <Screen>
+      <View testID="home-screen" />
       <H1>Today</H1>
       <P dim>Pause first. Then choose.</P>
 

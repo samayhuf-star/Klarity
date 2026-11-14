@@ -1,17 +1,22 @@
 import { Text, View } from 'react-native';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { router } from 'expo-router';
+import { usePlus } from '@/lib/purchases';
 import { useStore } from '@/lib/store';
-import { Bar, C, Card, H1, H2, P, Row, Screen } from '@/components/ui';
+import { Bar, C, Card, Chip, H1, H2, P, Row, Screen } from '@/components/ui';
 import { DAY_MS, dayStats, minutesReclaimed } from '@/lib/logic';
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function Insights() {
   const { state } = useStore();
+  const plus = usePlus();
+  const [range, setRange] = useState<7 | 30>(7);
+  const span = plus ? range : 7;
   const now = Date.now();
   const data = useMemo(() => {
-    const days = dayStats(state.events, now, 7);
-    const cutoff = now - 7 * DAY_MS;
+    const days = dayStats(state.events, now, span);
+    const cutoff = now - span * DAY_MS;
     const week = state.events.filter((e) => e.t >= cutoff);
     const byApp = new Map<string, number>();
     const byHour = new Array(24).fill(0) as number[];
@@ -22,7 +27,7 @@ export default function Insights() {
     const top = [...byApp.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
     const peak = byHour.indexOf(Math.max(...byHour));
     return { days, top, peak: byHour[peak] > 0 ? peak : null, skips: days.reduce((a, d) => a + d.skips, 0), opens: days.reduce((a, d) => a + d.opens, 0) };
-  }, [state.events, now]);
+  }, [state.events, now, span]);
 
   const max = Math.max(1, ...data.days.map((d) => d.opens + d.skips));
   const nameOf = (id: string) => state.rules.find((r) => r.id === id)?.name ?? id;
@@ -30,7 +35,11 @@ export default function Insights() {
   return (
     <Screen>
       <H1>Insights</H1>
-      <P dim>Last 7 days. Computed on your phone and never uploaded.</P>
+      <P dim>Last {span} days. Computed on your phone and never uploaded.</P>
+      <Row style={{ marginTop: 8 }}>
+        <Chip testID="insights-7" label="7 days" on={span === 7} onPress={() => setRange(7)} />
+        <Chip testID="insights-30" label={plus ? '30 days' : '30 days · Pro'} on={span === 30} onPress={() => (plus ? setRange(30) : router.push('/paywall'))} />
+      </Row>
 
       <Row style={{ marginTop: 14 }}>
         <Card style={{ flex: 1 }}>
@@ -45,7 +54,7 @@ export default function Insights() {
 
       <H2>Opens vs skips</H2>
       {data.days.map((d) => {
-        const dow = DOW[new Date(d.key + 'T12:00:00').getDay()];
+        const dow = span > 7 ? d.key.slice(5) : DOW[new Date(d.key + 'T12:00:00').getDay()];
         return (
           <View key={d.key} style={{ marginBottom: 10 }} accessible accessibilityLabel={`${dow}: ${d.opens} opens, ${d.skips} skipped`}>
             <Row style={{ justifyContent: 'space-between' }}>

@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { useStore } from '@/lib/store';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/components/ui';
 import { fmtDelay, type AppRule, type Window } from '@/lib/logic';
+import { usePlus } from '@/lib/purchases';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const hr = (h: number) => `${String(h).padStart(2, '0')}:00`;
@@ -10,6 +11,7 @@ const hr = (h: number) => `${String(h).padStart(2, '0')}:00`;
 export default function RuleEditor() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { state, update, locked } = useStore();
+  const plus = usePlus();
   const rule = state.rules.find((r) => r.id === id);
   if (!rule) {
     return (
@@ -50,8 +52,9 @@ export default function RuleEditor() {
       <P dim>After you choose to open, Klarity won't interrupt again (including links opened from other apps) for this long.</P>
 
       <H2>Scheduled block</H2>
+      {!plus && <P dim>Scheduled blocks and Strict mode are part of Klarity Pro.</P>}
       <Row>
-        <Chip label={rule.window ? 'On' : 'Off'} on={!!rule.window} disabled={locked} onPress={() => set({ window: rule.window ? null : win })} />
+        <Chip label={rule.window ? 'On' : 'Off'} on={!!rule.window} disabled={locked} onPress={() => (rule.window ? set({ window: null }) : plus ? set({ window: win }) : router.push('/paywall'))} />
       </Row>
       {rule.window && (
         <View style={{ marginTop: 8 }}>
@@ -74,7 +77,7 @@ export default function RuleEditor() {
 
       <H2>Strict mode</H2>
       <Row>
-        <Chip label={rule.strict ? 'Strict: on' : 'Strict: off'} on={rule.strict} disabled={locked} onPress={() => set({ strict: !rule.strict })} />
+        <Chip label={rule.strict ? 'Strict: on' : 'Strict: off'} on={rule.strict} disabled={locked} onPress={() => (rule.strict ? set({ strict: false }) : plus ? set({ strict: true }) : router.push('/paywall'))} />
       </Row>
       <P dim>Strict blocks the app inside the scheduled window and after the daily limit. Klarity only works while your Shortcuts automation is on, and you can always switch it off in Shortcuts.</P>
 

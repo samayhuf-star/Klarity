@@ -1,6 +1,6 @@
 # Klarity Privacy Policy
 
-Last updated: 11 November 2026
+Last updated: 14 November 2026
 
 **Klarity does not collect, transmit or share any personal data.**
 
@@ -9,6 +9,7 @@ Last updated: 11 November 2026
 - Klarity cannot see what you do inside other apps. It only records the moments you choose to open an app or skip it after a pause.
 - If you turn on the evening check-in, Klarity schedules a local notification on your device. No server is involved.
 - "Back up my rules" uses the iOS share sheet. You decide where that text goes.
+- Klarity Pro is an optional in-app subscription or one-time purchase handled by Apple. Klarity never sees your payment details; Apple only tells the app whether Pro is active.
 - You can erase everything at any time in Settings > Erase all data, or by deleting the app.
 
 ## Children
