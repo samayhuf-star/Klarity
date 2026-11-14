@@ -122,8 +122,9 @@ step 05_choice <<'Y'
     visible: "Do something else"
     timeout: 90000
 - tapOn: "Do something else"
-- extendedWaitUntil:
-    visible: "Just close this"
+- scrollUntilVisible:
+    element: "Just close this"
+    direction: DOWN
     timeout: 15000
 Y
 shot 05-swap
