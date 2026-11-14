@@ -4,11 +4,16 @@ import { View } from 'react-native';
 import { Button, Chip, H1, H2, P, Row, Screen } from '@/components/ui';
 import { CATALOG, newRule } from '@/lib/catalog';
 import { useStore } from '@/lib/store';
+import { FREE_APP_LIMIT } from '@/lib/config';
+import { usePlus } from '@/lib/purchases';
 
 export default function Onboarding() {
   const { update } = useStore();
+  const plus = usePlus();
   const [picked, setPicked] = useState<string[]>([]);
-  const toggle = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const atLimit = !plus && picked.length >= FREE_APP_LIMIT;
+  const toggle = (id: string) =>
+    setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : !plus && p.length >= FREE_APP_LIMIT ? p : [...p, id]));
 
   const go = () => {
     update((s) => ({
@@ -17,14 +22,14 @@ export default function Onboarding() {
       firstUse: Date.now(),
       rules: CATALOG.filter((a) => picked.includes(a.id)).map(newRule),
     }));
-    router.replace('/setup');
+    router.replace({ pathname: '/paywall', params: { from: 'onboarding' } });
   };
 
   return (
     <Screen>
       <H1>Welcome to Klarity</H1>
       <P dim>
-        Klarity adds a calm pause before the apps you open on autopilot. Everything stays on your phone. No account, no ads, no subscription.
+        Klarity adds a calm pause before the apps you open on autopilot. Everything stays on your phone, and there is no account to create.
       </P>
       <H2>Which apps pull you in?</H2>
       <Row>
@@ -32,8 +37,9 @@ export default function Onboarding() {
           <Chip key={a.id} label={a.name} on={picked.includes(a.id)} onPress={() => toggle(a.id)} />
         ))}
       </Row>
+      {atLimit && <P dim>The free plan covers {FREE_APP_LIMIT} apps. Klarity Pro adds as many as you like.</P>}
       <View style={{ height: 24 }} />
-      <Button label={picked.length ? `Continue with ${picked.length} app${picked.length > 1 ? 's' : ''}` : 'Skip for now'} onPress={go} />
+      <Button testID="onboarding-continue" label={picked.length ? `Continue with ${picked.length} app${picked.length > 1 ? 's' : ''}` : 'Skip for now'} onPress={go} />
     </Screen>
   );
 }

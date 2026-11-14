@@ -40,12 +40,13 @@ export function Card({ children, style }: { children: React.ReactNode; style?: V
 }
 
 export function Button({
-  label, onPress, kind = 'primary', disabled, hint,
-}: { label: string; onPress: () => void; kind?: 'primary' | 'ghost' | 'danger'; disabled?: boolean; hint?: string }) {
+  label, onPress, kind = 'primary', disabled, hint, testID,
+}: { label: string; onPress: () => void; kind?: 'primary' | 'ghost' | 'danger'; disabled?: boolean; hint?: string; testID?: string }) {
   const bg = kind === 'primary' ? C.acc : kind === 'danger' ? C.bad : 'transparent';
   const color = kind === 'ghost' ? C.fg : '#08201A';
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={hint}
@@ -62,9 +63,10 @@ export function Button({
   );
 }
 
-export function Chip({ label, on, onPress, disabled }: { label: string; on: boolean; onPress: () => void; disabled?: boolean }) {
+export function Chip({ label, on, onPress, disabled, testID }: { label: string; on: boolean; onPress: () => void; disabled?: boolean; testID?: string }) {
   return (
     <Pressable
+      testID={testID}
       accessibilityRole="button"
       accessibilityState={{ selected: on, disabled: !!disabled }}
       accessibilityLabel={label}

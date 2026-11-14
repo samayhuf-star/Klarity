@@ -16,10 +16,10 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: C.mut,
       }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: icon('🌿'), tabBarAccessibilityLabel: 'Today' }} />
-      <Tabs.Screen name="apps" options={{ title: 'Apps', tabBarIcon: icon('📱'), tabBarAccessibilityLabel: 'Apps and rules' }} />
-      <Tabs.Screen name="insights" options={{ title: 'Insights', tabBarIcon: icon('📊'), tabBarAccessibilityLabel: 'Insights' }} />
-      <Tabs.Screen name="settings" options={{ title: 'Settings', tabBarIcon: icon('⚙️'), tabBarAccessibilityLabel: 'Settings' }} />
+      <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: icon('🌿'), tabBarAccessibilityLabel: 'Today', tabBarButtonTestID: 'tab-today' }} />
+      <Tabs.Screen name="apps" options={{ title: 'Apps', tabBarIcon: icon('📱'), tabBarAccessibilityLabel: 'Apps and rules', tabBarButtonTestID: 'tab-apps' }} />
+      <Tabs.Screen name="insights" options={{ title: 'Insights', tabBarIcon: icon('📊'), tabBarAccessibilityLabel: 'Insights', tabBarButtonTestID: 'tab-insights' }} />
+      <Tabs.Screen name="settings" options={{ title: 'Settings', tabBarIcon: icon('⚙️'), tabBarAccessibilityLabel: 'Settings', tabBarButtonTestID: 'tab-settings' }} />
     </Tabs>
   );
 }

@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Alert, Share, Text, TextInput, View } from 'react-native';
+import { Alert, Linking, Share, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import * as Notifications from 'expo-notifications';
 import { initialState, useStore } from '@/lib/store';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/components/ui';
 import type { AppRule } from '@/lib/logic';
+import { CONFIG } from '@/lib/config';
+import { restore, usePlus } from '@/lib/purchases';
 
 const REMINDER_ID = 'klarity-daily';
 
@@ -18,6 +20,20 @@ export default function Settings() {
   const { state, update, replace, locked } = useStore();
   const [pin, setPin] = useState('');
   const [msg, setMsg] = useState('');
+  const plus = usePlus();
+  const [restoring, setRestoring] = useState(false);
+
+  const doRestore = async () => {
+    setRestoring(true);
+    try {
+      const ok = await restore();
+      Alert.alert(ok ? 'Restored' : 'Nothing to restore', ok ? 'Klarity Pro is active.' : 'No Klarity Pro purchase was found for this Apple ID.');
+    } catch {
+      Alert.alert('Restore failed', 'Please try again.');
+    } finally {
+      setRestoring(false);
+    }
+  };
 
   const setReminder = async (on: boolean) => {
     try {
@@ -101,6 +117,22 @@ export default function Settings() {
     <Screen>
       <H1>Settings</H1>
 
+      <H2>Klarity Pro</H2>
+      {plus ? (
+        <Card style={{ borderColor: C.acc }}>
+          <Text testID="settings-pro-active" style={{ color: C.acc, fontWeight: '600', fontSize: 16 }}>Klarity Pro is active</Text>
+          <P dim>Manage or cancel a subscription in your Apple ID settings.</P>
+        </Card>
+      ) : (
+        <Button testID="settings-pro" label="See Klarity Pro" onPress={() => router.push('/paywall')} />
+      )}
+      <View style={{ height: 8 }} />
+      <Button testID="settings-restore" label={restoring ? 'Restoring…' : 'Restore purchases'} kind="ghost" disabled={restoring} onPress={doRestore} />
+      <Row style={{ marginTop: 10, justifyContent: 'center', gap: 24 }}>
+        <Text accessibilityRole="link" style={{ color: C.acc }} onPress={() => Linking.openURL(CONFIG.termsUrl).catch(() => {})}>Terms of Use</Text>
+        <Text accessibilityRole="link" style={{ color: C.acc }} onPress={() => Linking.openURL(CONFIG.privacyUrl).catch(() => {})}>Privacy Policy</Text>
+      </Row>
+
       <H2>Goals</H2>
       <Stepper label="Daily opens goal" value={state.goalOpens} min={1} max={100} disabled={locked} onChange={(v) => update((s) => ({ ...s, goalOpens: v }))} />
       <Stepper label="Minutes per open" value={state.avgSessionMin} min={1} max={30} disabled={locked} onChange={(v) => update((s) => ({ ...s, avgSessionMin: v }))} fmt={(v) => `${v} min`} />
@@ -162,7 +194,7 @@ export default function Settings() {
 
       <H2>Privacy</H2>
       <P dim>
-        Klarity has no account, no ads and no analytics, and it never sends your data anywhere. Rules and history live only on this iPhone. Klarity can't see what you do inside other apps.
+        Klarity has no account, no ads and no analytics, and it never sends your data anywhere. Rules and history live only on this iPhone. Klarity can't see what you do inside other apps. Optional Klarity Pro purchases are handled by Apple.
       </P>
 
       <H2>Data</H2>
