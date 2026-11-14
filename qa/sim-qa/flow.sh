@@ -23,7 +23,8 @@ if ! command -v maestro >/dev/null 2>&1; then
 fi
 
 shot() { xcrun simctl io "$UDID" screenshot "$OUT/screenshots/$1.png" >/dev/null && echo "screenshot $1"; }
-alive() { xcrun simctl spawn "$UDID" launchctl list 2>/dev/null | grep -q "$BUNDLE_ID"; }
+# Simulator app processes run on the host; launchctl list inside the sim missed live apps (run 43551412204).
+alive() { pgrep -f "/${APP##*/}/" >/dev/null 2>&1; }
 
 step() { # name, yaml body
   local name="$1" f="$OUT/maestro/$1.yaml"
@@ -75,8 +76,8 @@ step 04_pause <<'Y'
     timeout: 20000
 - tapOn: "Open Instagram"
 - extendedWaitUntil:
-    visible: "Instagram"
-    timeout: 15000
+    visible: "Still want Instagram\\?"
+    timeout: 30000
 Y
 sleep 2; shot 04-pause
 
