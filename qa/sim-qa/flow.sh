@@ -36,7 +36,8 @@ step() { # name, yaml body
     echo "FAIL $name" | tee -a "$RES"; tail -n 25 "$OUT/maestro/$name.log"
   fi
   sleep 1
-  if alive; then echo "ALIVE after $name" >> "$RES"; else echo "CRASH? app not running after $name" | tee -a "$RES"; fi
+  # Process checks were unreliable on the runner (runs 43551412204, 43555352767, 43557321068); crashes are
+  # judged from the next Maestro step (no relaunch between steps) and the DiagnosticReports scan below.
 }
 
 step 01_launch <<'Y'

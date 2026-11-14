@@ -133,8 +133,10 @@ final class SimQATests: XCTestCase {
     }
 
     private func reachHome(_ app: XCUIApplication) -> Bool {
-        let home = byId(app, "home-screen")
-        if home.waitForExistence(timeout: 20) { return true }
+        // Run 43557321068: the zero-size "home-screen" marker view is pruned from the accessibility
+        // tree, so Today was on screen but not found. Use the visible "Opens today" card and the tab instead.
+        let home = labelContains(app, "Opens today")
+        if home.waitForExistence(timeout: 20) || byId(app, "tab-settings").exists { return true }
         // Fresh state: onboarding -> paywall (closable) -> setup -> Today.
         let cont = byId(app, "onboarding-continue")
         if cont.waitForExistence(timeout: 10) {
@@ -145,7 +147,7 @@ final class SimQATests: XCTestCase {
             for _ in 0..<4 where !(done.exists && done.isHittable) { app.swipeUp(); Thread.sleep(forTimeInterval: 0.5) }
             if done.exists { tapElement(done) }
         }
-        return home.waitForExistence(timeout: 15)
+        return home.waitForExistence(timeout: 15) || byId(app, "tab-settings").exists
     }
 
     private func openSettings(_ app: XCUIApplication) {
