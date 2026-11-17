@@ -7,7 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#0E1514",
+    "backgroundColor": "#12162B",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.samayhuf.klarity",
@@ -37,7 +37,7 @@
       [
         "expo-notifications",
         {
-          "color": "#5FB59D"
+          "color": "#FFB547"
         }
       ],
       "expo-font"
