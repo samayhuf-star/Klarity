@@ -1,14 +1,12 @@
 // Product IDs follow the iOS bundle id com.samayhuf.klarity (app.json).
-// Monthly $2.99 and yearly $19.99 are in the auto-renewable group "Klarity Pro", each with a 7-day free trial.
-// Lifetime $39.99 is a non-consumable with no trial. ASC products are not created by this repo.
+// One plan: weekly $1.99 in the auto-renewable group "Klarity Pro", with a 7-day free trial.
+// ASC products are not created by this repo.
 export const PRODUCT_IDS = {
-  monthly: 'com.samayhuf.klarity.monthly',
-  yearly: 'com.samayhuf.klarity.yearly',
-  lifetime: 'com.samayhuf.klarity.lifetime',
+  weekly: 'com.samayhuf.klarity.weekly',
 } as const;
 
 // RevenueCat: public SDK keys are set at build time in the EAS environment (appl_ / goog_).
-// Entitlement "premium" is unlocked by the monthly, yearly and lifetime products above, all on the "default" offering.
+// Entitlement "premium" is unlocked by the weekly product above, in the "default" offering (package $rc_weekly).
 /** Free tier: the full pause flow for up to this many apps. */
 export const FREE_APP_LIMIT = 3;
 

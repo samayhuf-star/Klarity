@@ -12,7 +12,10 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_RC_IOS_KEY": "appl_bdvVnogLXuqzgleQnbnkZbVJJRb"
+      }
     }
   },
   "submit": {

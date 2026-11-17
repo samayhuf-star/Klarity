@@ -3,7 +3,7 @@
 **Name:** Klarity: Mindful Pause
 **Subtitle (30 chars max):** Pause before you scroll
 **Category:** Productivity (secondary: Health & Fitness)
-**Price:** Free download. Optional Klarity Pro: $2.99/month or $19.99/year (each with a 7-day free trial), or $39.99 lifetime.
+**Price:** Free download. Optional Klarity Pro: $1.99/week with a 7-day free trial.
 **Age rating:** 4+
 **Support URL:** https://samayhuf-star.github.io/Klarity/support.html
 **Contact:** samayhuf@gmail.com
@@ -35,7 +35,7 @@ PRIVATE BY DESIGN
 No account. No ads. No tracking. Everything stays on your iPhone. Klarity can't see what you do inside other apps.
 
 KLARITY PRO (OPTIONAL)
-The pause is free for up to 3 apps. Klarity Pro adds unlimited apps (including any app by URL scheme), scheduled focus blocks and Strict mode, and 30-day insights. Choose $2.99/month or $19.99/year, each with a 7-day free trial, or $39.99 once for lifetime access. Subscriptions renew automatically unless cancelled at least 24 hours before the period ends; manage them in your Apple ID settings. Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+The pause is free for up to 3 apps. Klarity Pro adds unlimited apps (including any app by URL scheme), scheduled focus blocks and Strict mode, and 30-day insights. Klarity Pro is $1.99 per week after a 7-day free trial. Subscriptions renew automatically unless cancelled at least 24 hours before the period ends; manage them in your Apple ID settings. Terms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
 
 GOOD TO KNOW
 Klarity works through Apple's Shortcuts automations. You are always in control and can turn any automation off in Shortcuts at any time.
@@ -47,7 +47,7 @@ focus,mindful,pause,app limit,habit,digital wellbeing,doomscroll,breathe,self co
 First release.
 
 ## App Review notes
-Klarity is a self-control tool. It does not use the Screen Time/Family Controls API. It receives a URL (klarity://pause/<app>) from a user-created Shortcuts automation and shows a pause screen. To test without Shortcuts: open Klarity, pick any app on first launch, then tap "Open <app>" on the Today tab to see the pause flow. No login is required. Klarity Pro (com.samayhuf.klarity.monthly, .yearly, .lifetime) opens after onboarding and from Settings > See Klarity Pro; Restore purchases is on the paywall and in Settings.
+Klarity is a self-control tool. It does not use the Screen Time/Family Controls API. It receives a URL (klarity://pause/<app>) from a user-created Shortcuts automation and shows a pause screen. To test without Shortcuts: open Klarity, pick any app on first launch, then tap "Open <app>" on the Today tab to see the pause flow. No login is required. Klarity Pro (com.samayhuf.klarity.weekly) opens after onboarding and from Settings > See Klarity Pro; Restore purchases is on the paywall and in Settings.
 Contact: Samay Vashsht, +919953710111, samayhuf@gmail.com
 
 ## Privacy nutrition label
