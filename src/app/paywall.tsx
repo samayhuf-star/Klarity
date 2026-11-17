@@ -3,18 +3,18 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator, Alert, Linking, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, C, Card, H1, P, Screen } from '@/components/ui';
-import { CONFIG, FALLBACK_PRICE, PRODUCT_IDS, TRIAL_DAYS, type PlanKind } from '@/lib/config';
+import { CONFIG, FALLBACK_PRICE, OFFERED_PLANS, PRODUCT_IDS, TRIAL_DAYS, type PlanKind } from '@/lib/config';
 import { buy, loadOffer, restore, usePlus, type Offer } from '@/lib/purchases';
 
-const PLANS: PlanKind[] = ['yearly', 'monthly', 'lifetime'];
-const TITLE: Record<PlanKind, string> = { monthly: 'Monthly', yearly: 'Yearly', lifetime: 'Lifetime' };
+const PLANS: PlanKind[] = OFFERED_PLANS;
+const TITLE: Record<PlanKind, string> = { weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly', lifetime: 'Lifetime' };
 
 /** Price line for a plan card. Trial copy shows unless the App Store says this Apple ID has no trial left. */
 function planLine(kind: PlanKind, offer: Offer, loaded: boolean): string {
   const plan = offer[kind];
   const price = plan?.price ?? FALLBACK_PRICE[kind];
   if (kind === 'lifetime') return `${price} one-time purchase. Yours forever, no trial, no renewal.`;
-  const per = kind === 'yearly' ? 'year' : 'month';
+  const per = kind === 'weekly' ? 'week' : kind === 'yearly' ? 'year' : 'month';
   const trial = plan ? plan.trialDays : loaded ? null : TRIAL_DAYS;
   return trial ? `${trial} days free, then ${price}/${per}, cancel anytime` : `${price}/${per}, cancel anytime`;
 }
@@ -25,7 +25,7 @@ export default function Paywall() {
   const plus = usePlus();
   const [offer, setOffer] = useState<Offer>({});
   const [loaded, setLoaded] = useState(false);
-  const [pick, setPick] = useState<PlanKind>('yearly');
+  const [pick, setPick] = useState<PlanKind>('weekly');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function Paywall() {
         <Button testID="paywall-restore" label="Restore purchases" kind="ghost" disabled={busy} onPress={doRestore} />
 
         <P dim style={{ fontSize: 12, lineHeight: 17, marginTop: 14 }}>
-          Payment is charged to your Apple ID when you confirm, or when the free trial ends. Subscriptions renew automatically at the same price unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in your Apple ID settings. Lifetime is a single payment.
+          Payment is charged to your Apple ID when you confirm, or when the free trial ends. Subscriptions renew automatically at the same price unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in your Apple ID settings.
         </P>
         <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 24, marginTop: 10 }}>
           <Text testID="paywall-terms" accessibilityRole="link" style={{ color: C.acc, fontSize: 13 }} onPress={() => Linking.openURL(CONFIG.termsUrl).catch(() => {})}>

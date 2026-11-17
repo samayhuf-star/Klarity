@@ -16,7 +16,7 @@ export interface ProductLike {
   introductoryPriceNumberOfPeriodsIOS?: string | null;
 }
 
-export type PlanKind = 'monthly' | 'yearly' | 'lifetime';
+export type PlanKind = 'weekly' | 'monthly' | 'yearly' | 'lifetime';
 
 const DAYS: Record<string, number> = { day: 1, week: 7, month: 30, year: 365 };
 
@@ -53,6 +53,6 @@ export function planPriceText(plan: {
   if (plan.kind === 'lifetime' || !plan.trialDays || plan.trialDays <= 0 || !plan.price) {
     return plan.current;
   }
-  const period = plan.kind === 'yearly' ? 'year' : 'month';
+  const period = plan.kind === 'weekly' ? 'week' : plan.kind === 'yearly' ? 'year' : 'month';
   return `Try ${plan.trialDays} days free, then ${plan.price}/${period}`;
 }
