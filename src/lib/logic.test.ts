@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { decide, inWindow, computeStreak, dayKey, opensToday, DAY_MS, type AppRule, type Ev } from './logic.ts';
+import { decide, inWindow, computeStreak, weeklyReport, reasonCounts, streakSaverDue, dayKey, opensToday, DAY_MS, type AppRule, type Ev } from './logic.ts';
 
 const rule: AppRule = {
   id: 'ig', name: 'Instagram', scheme: 'instagram://', baseDelay: 10, growBy: 5,
@@ -75,4 +75,36 @@ test('one miss in 7 days is forgiven, two break', () => {
 
 test('dayKey is stable', () => {
   assert.equal(dayKey(NOW), '2026-11-11');
+});
+
+test('weeklyReport compares this week with the previous one', () => {
+  const now = Date.UTC(2026, 10, 17, 12);
+  const ev: Ev[] = [
+    { t: now - DAY_MS, app: 'ig', kind: 'open' },
+    { t: now - 2 * DAY_MS, app: 'ig', kind: 'skip' },
+    { t: now - 9 * DAY_MS, app: 'ig', kind: 'open' },
+    { t: now - 9 * DAY_MS, app: 'ig', kind: 'open' },
+  ];
+  const r = weeklyReport(ev, 6, now);
+  assert.equal(r.opens, 1);
+  assert.equal(r.skips, 1);
+  assert.equal(r.prevOpens, 2);
+  assert.equal(r.minutesKept, 6);
+});
+
+test('reasonCounts ranks reasons and ignores old events', () => {
+  const now = Date.UTC(2026, 10, 17, 12);
+  const ev: Ev[] = [
+    { t: now - DAY_MS, app: 'ig', kind: 'open', reason: 'Bored' },
+    { t: now - DAY_MS, app: 'ig', kind: 'open', reason: 'Bored' },
+    { t: now - 2 * DAY_MS, app: 'ig', kind: 'open', reason: 'Habit' },
+    { t: now - 40 * DAY_MS, app: 'ig', kind: 'open', reason: 'Habit' },
+  ];
+  assert.deepEqual(reasonCounts(ev, now, 7), [['Bored', 2], ['Habit', 1]]);
+});
+
+test('streakSaverDue fires only close to, not over, the goal', () => {
+  assert.equal(streakSaverDue(11, 15), false);
+  assert.equal(streakSaverDue(12, 15), true);
+  assert.equal(streakSaverDue(15, 15), false);
 });

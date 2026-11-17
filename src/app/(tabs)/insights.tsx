@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { usePlus } from '@/lib/purchases';
 import { useStore } from '@/lib/store';
 import { Bar, C, Card, Chip, H1, H2, P, Row, Screen } from '@/components/ui';
-import { DAY_MS, dayStats, minutesReclaimed } from '@/lib/logic';
+import { DAY_MS, dayStats, minutesReclaimed, reasonCounts, weeklyReport } from '@/lib/logic';
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -29,6 +29,9 @@ export default function Insights() {
     return { days, top, peak: byHour[peak] > 0 ? peak : null, skips: days.reduce((a, d) => a + d.skips, 0), opens: days.reduce((a, d) => a + d.opens, 0) };
   }, [state.events, now, span]);
 
+  const wk = weeklyReport(state.events, state.avgSessionMin, now);
+  const reasons = reasonCounts(state.events, now, span);
+  const delta = (a: number, b: number) => (b === 0 ? '–' : `${a - b > 0 ? '+' : ''}${a - b}`);
   const max = Math.max(1, ...data.days.map((d) => d.opens + d.skips));
   const nameOf = (id: string) => state.rules.find((r) => r.id === id)?.name ?? id;
 
@@ -52,6 +55,22 @@ export default function Insights() {
         </Card>
       </Row>
 
+      <H2>Weekly report</H2>
+      <Card>
+        {[
+          ['', 'This week', 'Last week', 'Change'],
+          ['Opened', wk.opens, wk.prevOpens, delta(wk.opens, wk.prevOpens)],
+          ['Skipped', wk.skips, wk.prevSkips, delta(wk.skips, wk.prevSkips)],
+        ].map((row, i) => (
+          <Row key={i} style={{ justifyContent: 'space-between', flexWrap: 'nowrap', marginBottom: 6 }}>
+            {row.map((c, j) => (
+              <Text key={j} style={{ color: i === 0 ? C.mut : C.fg, flex: 1, textAlign: j === 0 ? 'left' : 'right', fontFamily: i === 0 ? 'Inter_400Regular' : 'Inter_600SemiBold' }}>{String(c)}</Text>
+            ))}
+          </Row>
+        ))}
+        <P dim>About {wk.minutesKept} min kept this week (estimate).</P>
+      </Card>
+
       <H2>Opens vs skips</H2>
       {data.days.map((d) => {
         const dow = span > 7 ? d.key.slice(5) : DOW[new Date(d.key + 'T12:00:00').getDay()];
@@ -72,6 +91,26 @@ export default function Insights() {
         <Text style={{ color: C.warn }}>■ opened</Text>
         <Text style={{ color: C.acc }}>■ skipped</Text>
       </Row>
+
+      <H2>Why you open apps</H2>
+      {!plus ? (
+        <Card>
+          <P dim>See your reasons for opening apps and spot patterns. Included in Klarity Pro.</P>
+          <View style={{ height: 8 }} />
+          <Chip label="Unlock with Pro" on={false} onPress={() => router.push('/paywall')} />
+        </Card>
+      ) : reasons.length === 0 ? (
+        <P dim>Pick a reason when you open an app and it will show up here.</P>
+      ) : (
+        reasons.map(([r, n]) => (
+          <Card key={r}>
+            <Row style={{ justifyContent: 'space-between' }}>
+              <Text style={{ color: C.fg }}>{r}</Text>
+              <Text style={{ color: C.mut }}>{n}×</Text>
+            </Row>
+          </Card>
+        ))
+      )}
 
       <H2>Triggers</H2>
       {data.top.length === 0 ? (

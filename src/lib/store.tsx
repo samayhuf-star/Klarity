@@ -14,6 +14,8 @@ export type State = {
   lastBounce: Record<string, number>;
   lastExternalPause: number | null;
   reminders: boolean;
+  notifyStreak: boolean;
+  notifyWeekly: boolean;
   lockPin: string | null;
   lockUntil: number;
 };
@@ -30,6 +32,8 @@ export const initialState = (): State => ({
   lastBounce: {},
   lastExternalPause: null,
   reminders: false,
+  notifyStreak: false,
+  notifyWeekly: false,
   lockPin: null,
   lockUntil: 0,
 });

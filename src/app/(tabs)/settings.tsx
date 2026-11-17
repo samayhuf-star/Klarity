@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { Alert, Linking, Share, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
-import * as Notifications from 'expo-notifications';
 import { initialState, useStore } from '@/lib/store';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/components/ui';
 import type { AppRule } from '@/lib/logic';
+import { ensurePermission, syncNotifications } from '@/lib/notify';
 import { CONFIG } from '@/lib/config';
 import { openCustomerCenter, restore, usePlus } from '@/lib/purchases';
-
-const REMINDER_ID = 'klarity-daily';
 
 function validRule(r: unknown): r is AppRule {
   const x = r as AppRule;
@@ -35,21 +33,12 @@ export default function Settings() {
     }
   };
 
-  const setReminder = async (on: boolean) => {
+  const setNotify = async (key: 'reminders' | 'notifyStreak' | 'notifyWeekly', on: boolean) => {
     try {
-      if (on) {
-        const p = await Notifications.requestPermissionsAsync();
-        if (!p.granted) return setMsg('Notifications are off for Klarity in iOS Settings.');
-        await Notifications.cancelAllScheduledNotificationsAsync();
-        await Notifications.scheduleNotificationAsync({
-          identifier: REMINDER_ID,
-          content: { title: 'Klarity', body: 'Take a minute to see how today went.' },
-          trigger: { type: Notifications.SchedulableTriggerInputTypes.DAILY, hour: 20, minute: 0 },
-        });
-      } else {
-        await Notifications.cancelAllScheduledNotificationsAsync();
-      }
-      update((s) => ({ ...s, reminders: on }));
+      if (on && !(await ensurePermission())) return setMsg('Notifications are off for Klarity in iOS Settings.');
+      const next = { ...state, [key]: on };
+      await syncNotifications(next);
+      update((s) => ({ ...s, [key]: on }));
       setMsg('');
     } catch {
       setMsg("Couldn't change the reminder. Try again.");
@@ -142,10 +131,13 @@ export default function Settings() {
       <H2>Connection</H2>
       <Button label="Shortcuts setup and status" kind="ghost" onPress={() => router.push('/setup')} />
 
-      <H2>Evening check-in</H2>
+      <H2>Reminders and reports</H2>
       <Row>
-        <Chip label={state.reminders ? 'On at 8 pm' : 'Off'} on={state.reminders} onPress={() => setReminder(!state.reminders)} />
+        <Chip testID="notify-daily" label={state.reminders ? 'Evening check-in · 8 pm' : 'Evening check-in · off'} on={state.reminders} onPress={() => setNotify('reminders', !state.reminders)} />
+        <Chip testID="notify-streak" label={state.notifyStreak ? 'Streak saver · on' : 'Streak saver · off'} on={state.notifyStreak} onPress={() => setNotify('notifyStreak', !state.notifyStreak)} />
+        <Chip testID="notify-weekly" label={state.notifyWeekly ? 'Weekly report · Sun 9 am' : 'Weekly report · off'} on={state.notifyWeekly} onPress={() => setNotify('notifyWeekly', !state.notifyWeekly)} />
       </Row>
+      {!!msg && <P style={{ color: C.warn }}>{msg}</P>}
 
       <H2>Settings lock</H2>
       <P dim>Lock your rules so you can't loosen them in a weak moment. Give the PIN to someone you trust.</P>

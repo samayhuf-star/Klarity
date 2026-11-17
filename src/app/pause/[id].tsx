@@ -4,9 +4,10 @@ import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { addEvent, useStore } from '@/lib/store';
 import { Button, C, F, H1, P, Ring, Screen } from '@/components/ui';
-import { SWAPS, decide, fmtDelay, opensToday, promptFor } from '@/lib/logic';
+import { usePlus } from '@/lib/purchases';
+import { REASONS, SWAPS, decide, fmtDelay, opensToday, promptFor } from '@/lib/logic';
 
-type Phase = 'init' | 'wait' | 'choice' | 'swap' | 'blocked' | 'grace' | 'missing' | 'done';
+type Phase = 'init' | 'wait' | 'choice' | 'reason' | 'swap' | 'blocked' | 'grace' | 'missing' | 'done';
 
 export default function Pause() {
   const { id, src } = useLocalSearchParams<{ id: string; src?: string }>();
@@ -21,6 +22,7 @@ export default function Pause() {
   const started = useRef(false);
   const scale = useRef(new Animated.Value(0.6)).current;
   const external = src !== 'app';
+  const plus = usePlus();
 
   // Decide what to show, once, when storage has loaded.
   useEffect(() => {
@@ -104,10 +106,10 @@ export default function Pause() {
     );
   }
 
-  const openApp = () => {
+  const openApp = (reason?: string) => {
     const now = Date.now();
     update((s) => ({
-      ...addEvent(s, { t: now, app: rule.id, kind: 'open' }),
+      ...addEvent(s, { t: now, app: rule.id, kind: 'open', reason }),
       graceUntil: { ...s.graceUntil, [rule.id]: now + rule.graceMin * 60_000 },
     }));
     Linking.openURL(rule.scheme).catch(() => setErr(`Couldn't open ${rule.name}. Is it installed?`));
@@ -152,7 +154,22 @@ export default function Pause() {
             </P>
             <Button label="Do something else" onPress={() => setPhase('swap')} />
             <View style={{ height: 10 }} />
-            <Button label={`Open ${rule.name}`} kind="ghost" onPress={openApp} />
+            <Button label={`Open ${rule.name}`} kind="ghost" onPress={() => (plus ? setPhase('reason') : openApp())} />
+          </>
+        )}
+
+        {phase === 'reason' && (
+          <>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 24, textAlign: 'center', fontFamily: F.head, marginBottom: 16 }}>
+              Why do you need it?
+            </Text>
+            {REASONS.map((r) => (
+              <View key={r} style={{ marginBottom: 8 }}>
+                <Button label={r} kind="ghost" onPress={() => openApp(r)} />
+              </View>
+            ))}
+            <View style={{ height: 6 }} />
+            <Button label="Skip" kind="ghost" onPress={() => openApp()} />
           </>
         )}
 

@@ -1,6 +1,7 @@
 import { Redirect, router } from 'expo-router';
 import { Text, View } from 'react-native';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { syncNotifications } from '@/lib/notify';
 import { useStore } from '@/lib/store';
 import { Bar, Button, C, Card, F, H1, H2, P, Ring, Row, Screen } from '@/components/ui';
 import { computeStreak, decide, fmtDelay, minutesReclaimed, opensToday } from '@/lib/logic';
@@ -14,6 +15,11 @@ export default function Today() {
     [state.events, state.goalOpens, state.firstUse, now],
   );
   const skipsToday = state.events.filter((e) => e.kind === 'skip' && new Date(e.t).toDateString() === new Date(now).toDateString()).length;
+
+  useEffect(() => {
+    if (ready && state.notifyStreak) void syncNotifications(state).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, total, state.notifyStreak, state.goalOpens]);
 
   if (!ready) return null;
   if (!state.onboarded) return <Redirect href="/onboarding" />;

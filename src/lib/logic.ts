@@ -15,7 +15,7 @@ export type AppRule = {
 };
 
 export type EventKind = 'pause' | 'open' | 'skip';
-export type Ev = { t: number; app: string; kind: EventKind; ext?: boolean; swap?: string };
+export type Ev = { t: number; app: string; kind: EventKind; ext?: boolean; swap?: string; reason?: string };
 
 export const MAX_DELAY = 120;
 export const DAY_MS = 86_400_000;
@@ -139,4 +139,37 @@ export function fmtDelay(sec: number): string {
 export function prune(events: Ev[], now: number, keepDays = 90): Ev[] {
   const cutoff = now - keepDays * DAY_MS;
   return events.filter((e) => e.t >= cutoff);
+}
+
+export const REASONS = ['Bored', 'Habit', 'Need it for something', 'Stressed', 'Waiting'];
+
+export type WeekReport = { opens: number; skips: number; prevOpens: number; prevSkips: number; minutesKept: number; bestDay: string | null };
+
+// This week = the last 7 days up to now; previous week = the 7 days before that.
+export function weeklyReport(events: Ev[], avgSessionMin: number, now: number): WeekReport {
+  const wk = 7 * DAY_MS;
+  let opens = 0, skips = 0, prevOpens = 0, prevSkips = 0;
+  for (const e of events) {
+    const age = now - e.t;
+    if (age < 0) continue;
+    const cur = age < wk;
+    const prev = !cur && age < 2 * wk;
+    if (e.kind === 'open') { if (cur) opens++; else if (prev) prevOpens++; }
+    if (e.kind === 'skip') { if (cur) skips++; else if (prev) prevSkips++; }
+  }
+  const days = dayStats(events, now, 7).filter((d) => d.opens + d.skips + d.pauses > 0);
+  const best = days.length ? days.reduce((a, b) => (b.opens < a.opens ? b : a)) : null;
+  return { opens, skips, prevOpens, prevSkips, minutesKept: minutesReclaimed(skips, avgSessionMin), bestDay: best ? best.key : null };
+}
+
+export function reasonCounts(events: Ev[], now: number, days: number): [string, number][] {
+  const cutoff = now - days * DAY_MS;
+  const m = new Map<string, number>();
+  for (const e of events) if (e.kind === 'open' && e.reason && e.t >= cutoff) m.set(e.reason, (m.get(e.reason) ?? 0) + 1);
+  return [...m.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+// Streak saver: warn when today's opens are within 20% of the goal but not yet over it.
+export function streakSaverDue(opens: number, goal: number): boolean {
+  return goal > 0 && opens < goal && opens >= Math.ceil(goal * 0.8);
 }
