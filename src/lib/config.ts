@@ -7,31 +7,17 @@ export const PRODUCT_IDS = {
   lifetime: 'com.samayhuf.klarity.lifetime',
 } as const;
 
-export type ProductId = (typeof PRODUCT_IDS)[keyof typeof PRODUCT_IDS];
-export type PlanKind = 'monthly' | 'yearly' | 'lifetime';
-
-export const SUBSCRIPTION_IDS: ProductId[] = [PRODUCT_IDS.monthly, PRODUCT_IDS.yearly];
-export const ALL_PRODUCT_IDS: ProductId[] = [PRODUCT_IDS.monthly, PRODUCT_IDS.yearly, PRODUCT_IDS.lifetime];
-
-export const PLAN_KIND: Record<ProductId, PlanKind> = {
-  [PRODUCT_IDS.monthly]: 'monthly',
-  [PRODUCT_IDS.yearly]: 'yearly',
-  [PRODUCT_IDS.lifetime]: 'lifetime',
-};
-
-/** US list prices, shown only until the App Store returns localized prices. */
-export const FALLBACK_PRICE: Record<PlanKind, string> = {
-  monthly: '$2.99',
-  yearly: '$19.99',
-  lifetime: '$39.99',
-};
-export const TRIAL_DAYS = 7;
-
+// RevenueCat: public SDK keys are set at build time in the EAS environment (appl_ / goog_).
+// Entitlement "premium" is unlocked by the monthly, yearly and lifetime products above, all on the "default" offering.
 /** Free tier: the full pause flow for up to this many apps. */
 export const FREE_APP_LIMIT = 3;
 
 export const CONFIG = {
   appName: 'Klarity',
+  entitlementId: 'premium',
+  revenueCatIosKey: process.env.EXPO_PUBLIC_RC_IOS_KEY ?? '',
+  revenueCatAndroidKey: process.env.EXPO_PUBLIC_RC_ANDROID_KEY ?? '',
+  freeAppLimit: 3,
   termsUrl: 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/',
   privacyUrl: 'https://samayhuf-star.github.io/Klarity/privacy.html',
 } as const;

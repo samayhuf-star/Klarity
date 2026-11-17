@@ -7,7 +7,7 @@ import { initialState, useStore } from '@/lib/store';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/components/ui';
 import type { AppRule } from '@/lib/logic';
 import { CONFIG } from '@/lib/config';
-import { restore, usePlus } from '@/lib/purchases';
+import { openCustomerCenter, restore, usePlus } from '@/lib/purchases';
 
 const REMINDER_ID = 'klarity-daily';
 
@@ -127,7 +127,8 @@ export default function Settings() {
         <Button testID="settings-pro" label="See Klarity Pro" onPress={() => router.push('/paywall')} />
       )}
       <View style={{ height: 8 }} />
-      <Button testID="settings-restore" label={restoring ? 'Restoring…' : 'Restore purchases'} kind="ghost" disabled={restoring} onPress={doRestore} />
+      {plus ? <Button testID="settings-manage" label="Manage subscription" onPress={() => void openCustomerCenter().catch(() => {})} /> : null}
+        <Button testID="settings-restore" label={restoring ? 'Restoring…' : 'Restore purchases'} kind="ghost" disabled={restoring} onPress={doRestore} />
       <Row style={{ marginTop: 10, justifyContent: 'center', gap: 24 }}>
         <Text accessibilityRole="link" style={{ color: C.acc }} onPress={() => Linking.openURL(CONFIG.termsUrl).catch(() => {})}>Terms of Use</Text>
         <Text accessibilityRole="link" style={{ color: C.acc }} onPress={() => Linking.openURL(CONFIG.privacyUrl).catch(() => {})}>Privacy Policy</Text>
@@ -194,7 +195,7 @@ export default function Settings() {
 
       <H2>Privacy</H2>
       <P dim>
-        Klarity has no account, no ads and no analytics, and it never sends your data anywhere. Rules and history live only on this iPhone. Klarity can't see what you do inside other apps. Optional Klarity Pro purchases are handled by Apple.
+        Klarity has no account, no ads and no analytics, and it never sends your rules or history anywhere. Rules and history live only on this iPhone. Klarity can't see what you do inside other apps. Optional Klarity Pro purchases are handled by Apple and RevenueCat, which receive only an anonymous purchase ID.
       </P>
 
       <H2>Data</H2>
