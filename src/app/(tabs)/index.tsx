@@ -2,7 +2,7 @@ import { Redirect, router } from 'expo-router';
 import { Text, View } from 'react-native';
 import { useMemo } from 'react';
 import { useStore } from '@/lib/store';
-import { Bar, Button, C, Card, H1, H2, P, Row, Screen } from '@/components/ui';
+import { Bar, Button, C, Card, F, H1, H2, P, Ring, Row, Screen } from '@/components/ui';
 import { computeStreak, decide, fmtDelay, minutesReclaimed, opensToday } from '@/lib/logic';
 
 export default function Today() {
@@ -26,24 +26,22 @@ export default function Today() {
       <H1>Today</H1>
       <P dim>Pause first. Then choose.</P>
 
-      <Card style={{ marginTop: 14 }}>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <Text style={{ color: C.fg, fontSize: 17, fontWeight: '600' }}>Opens today</Text>
-          <Text accessibilityLabel={`${total} of ${state.goalOpens} opens`} style={{ color: total > state.goalOpens ? C.warn : C.fg, fontSize: 17 }}>
-            {total} / {state.goalOpens}
+      <Card style={{ marginTop: 14, alignItems: 'center', paddingVertical: 24 }}>
+        <Ring size={190} stroke={14} progress={state.goalOpens > 0 ? total / state.goalOpens : 0} color={total > state.goalOpens ? C.bad : C.acc}>
+          <Text accessibilityLabel={`${total} of ${state.goalOpens} opens`} style={{ color: C.fg, fontFamily: F.head, fontSize: 46 }}>
+            {total}
           </Text>
-        </Row>
-        <View style={{ height: 8 }} />
-        <Bar value={total} max={state.goalOpens} color={total > state.goalOpens ? C.warn : C.acc} />
-        <View style={{ height: 10 }} />
-        <P dim>
+          <Text style={{ color: C.mut, fontFamily: F.body }}>of {state.goalOpens} opens</Text>
+        </Ring>
+        <View style={{ height: 14 }} />
+        <P dim style={{ textAlign: 'center' }}>
           {skipsToday} skipped · about {minutesReclaimed(skipsToday, state.avgSessionMin)} min kept today (estimate)
         </P>
       </Card>
 
       <Card>
-        <Text style={{ color: C.fg, fontSize: 17, fontWeight: '600' }}>
-          {streak.streak}-day streak {streak.streak > 0 ? '🔥' : ''}
+        <Text style={{ color: C.fg, fontSize: 17, fontFamily: F.head }}>
+          {streak.streak}-day streak
         </Text>
         <P dim>
           A day counts when you stay at or under {state.goalOpens} opens. One slip per week is forgiven, so a bad day doesn't erase your progress.
@@ -52,7 +50,7 @@ export default function Today() {
 
       {stale && (
         <Card style={{ borderColor: C.warn }}>
-          <Text style={{ color: C.warn, fontSize: 16, fontWeight: '600' }}>Setup not finished</Text>
+          <Text style={{ color: C.warn, fontSize: 16, fontFamily: 'Inter_600SemiBold' }}>Setup not finished</Text>
           <P dim>Klarity hasn't received a pause from your iPhone yet. Finish the 2-minute Shortcuts setup so it can interrupt automatic opens.</P>
           <View style={{ height: 10 }} />
           <Button label="Finish setup" onPress={() => router.push('/setup')} />
@@ -67,7 +65,7 @@ export default function Today() {
         return (
           <Card key={r.id}>
             <Row style={{ justifyContent: 'space-between' }}>
-              <Text style={{ color: C.fg, fontSize: 17, fontWeight: '600' }}>{r.name}</Text>
+              <Text style={{ color: C.fg, fontSize: 17, fontFamily: F.head }}>{r.name}</Text>
               <Text style={{ color: C.mut }}>
                 {n}
                 {r.dailyOpens > 0 ? ` / ${r.dailyOpens}` : ''} opens

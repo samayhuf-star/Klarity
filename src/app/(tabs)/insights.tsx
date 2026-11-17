@@ -43,11 +43,11 @@ export default function Insights() {
 
       <Row style={{ marginTop: 14 }}>
         <Card style={{ flex: 1 }}>
-          <Text style={{ color: C.acc, fontSize: 26, fontWeight: '700' }}>{data.skips}</Text>
+          <Text style={{ color: C.acc, fontSize: 26, fontFamily: 'SpaceGrotesk_700Bold' }}>{data.skips}</Text>
           <P dim>times you chose something else</P>
         </Card>
         <Card style={{ flex: 1 }}>
-          <Text style={{ color: C.acc, fontSize: 26, fontWeight: '700' }}>~{minutesReclaimed(data.skips, state.avgSessionMin)}m</Text>
+          <Text style={{ color: C.acc, fontSize: 26, fontFamily: 'SpaceGrotesk_700Bold' }}>~{minutesReclaimed(data.skips, state.avgSessionMin)}m</Text>
           <P dim>kept (estimate at {state.avgSessionMin} min per open)</P>
         </Card>
       </Row>

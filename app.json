@@ -39,7 +39,8 @@
         {
           "color": "#5FB59D"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "owner": "krosz",
     "extra": {

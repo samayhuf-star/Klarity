@@ -120,7 +120,7 @@ export default function Settings() {
       <H2>Klarity Pro</H2>
       {plus ? (
         <Card style={{ borderColor: C.acc }}>
-          <Text testID="settings-pro-active" style={{ color: C.acc, fontWeight: '600', fontSize: 16 }}>Klarity Pro is active</Text>
+          <Text testID="settings-pro-active" style={{ color: C.acc, fontFamily: 'Inter_600SemiBold', fontSize: 16 }}>Klarity Pro is active</Text>
           <P dim>Manage or cancel a subscription in your Apple ID settings.</P>
         </Card>
       ) : (

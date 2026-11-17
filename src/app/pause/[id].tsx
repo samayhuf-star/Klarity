@@ -3,7 +3,7 @@ import { Animated, Easing, Linking, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { addEvent, useStore } from '@/lib/store';
-import { Button, C, H1, P, Screen } from '@/components/ui';
+import { Button, C, F, H1, P, Ring, Screen } from '@/components/ui';
 import { SWAPS, decide, fmtDelay, opensToday, promptFor } from '@/lib/logic';
 
 type Phase = 'init' | 'wait' | 'choice' | 'swap' | 'blocked' | 'grace' | 'missing' | 'done';
@@ -14,6 +14,7 @@ export default function Pause() {
   const rule = state.rules.find((r) => r.id === id);
   const [phase, setPhase] = useState<Phase>('init');
   const [left, setLeft] = useState(0);
+  const [total0, setTotal0] = useState(0);
   const [breathIn, setBreathIn] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [note, setNote] = useState('');
@@ -50,6 +51,7 @@ export default function Pause() {
     if (d.overLimit) setNote(`You're past your limit of ${rule.dailyOpens} opens today.`);
     else if (d.inBlockWindow) setNote('This is inside your scheduled focus window.');
     setLeft(d.delay);
+    setTotal0(d.delay);
     setPhase('wait');
   }, [ready, rule, state, external, update]);
 
@@ -125,14 +127,13 @@ export default function Pause() {
 
         {phase === 'wait' && (
           <>
-            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 24, textAlign: 'center', fontWeight: '600' }}>{prompt}</Text>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 26, textAlign: 'center', fontFamily: F.head }}>{prompt}</Text>
             {!!note && <P style={{ color: C.warn, textAlign: 'center', marginTop: 10 }}>{note}</P>}
             <View style={{ alignItems: 'center', marginVertical: 36 }}>
-              <Animated.View
-                accessibilityLabel={`${breathIn ? 'Breathe in' : 'Breathe out'}. ${left} seconds left`}
-                style={{ width: 180, height: 180, borderRadius: 90, backgroundColor: C.accDim, borderColor: C.acc, borderWidth: 2, alignItems: 'center', justifyContent: 'center', transform: [{ scale }] }}
-              >
-                <Text style={{ color: C.fg, fontSize: 40, fontWeight: '700' }}>{left}</Text>
+              <Animated.View accessibilityLabel={`${breathIn ? 'Breathe in' : 'Breathe out'}. ${left} seconds left`} style={{ transform: [{ scale }] }}>
+                <Ring size={220} stroke={14} progress={total0 > 0 ? left / total0 : 0}>
+                  <Text style={{ color: C.fg, fontFamily: F.head, fontSize: 64 }}>{left}</Text>
+                </Ring>
               </Animated.View>
               <P dim style={{ marginTop: 14 }}>{breathIn ? 'Breathe in…' : 'Breathe out…'}</P>
             </View>
@@ -142,7 +143,7 @@ export default function Pause() {
 
         {phase === 'choice' && (
           <>
-            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 24, textAlign: 'center', fontWeight: '600' }}>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 26, textAlign: 'center', fontFamily: F.head }}>
               Still want {rule.name}?
             </Text>
             {!!note && <P style={{ color: C.warn, textAlign: 'center', marginTop: 10 }}>{note}</P>}
@@ -157,7 +158,7 @@ export default function Pause() {
 
         {phase === 'swap' && (
           <>
-            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 22, textAlign: 'center', fontWeight: '600', marginBottom: 16 }}>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 24, textAlign: 'center', fontFamily: F.head, marginBottom: 16 }}>
               Try one of these instead
             </Text>
             {SWAPS.map((sw) => (
@@ -172,7 +173,7 @@ export default function Pause() {
 
         {phase === 'blocked' && (
           <>
-            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 24, textAlign: 'center', fontWeight: '600' }}>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 26, textAlign: 'center', fontFamily: F.head }}>
               {rule.name} is blocked
             </Text>
             <P dim style={{ textAlign: 'center', marginVertical: 16 }}>{note}</P>
@@ -184,7 +185,7 @@ export default function Pause() {
 
         {phase === 'grace' && (
           <>
-            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 22, textAlign: 'center', fontWeight: '600' }}>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 24, textAlign: 'center', fontFamily: F.head }}>
               You're in your {rule.graceMin}-minute window
             </Text>
             <P dim style={{ textAlign: 'center', marginVertical: 16 }}>No pause needed right now.</P>
@@ -196,7 +197,7 @@ export default function Pause() {
 
         {phase === 'done' && (
           <>
-            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 26, textAlign: 'center', fontWeight: '700' }}>Nice. That's a win. 🌿</Text>
+            <Text accessibilityRole="header" style={{ color: C.fg, fontSize: 28, textAlign: 'center', fontFamily: F.head }}>Nice. That's a win.</Text>
             <P dim style={{ textAlign: 'center', marginVertical: 16 }}>You can lock your phone or go back to what you were doing.</P>
             <Button label="Back to Klarity" onPress={() => router.replace('/')} />
           </>

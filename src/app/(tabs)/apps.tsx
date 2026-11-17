@@ -46,7 +46,7 @@ export default function Apps() {
       {state.rules.map((r) => (
         <Card key={r.id}>
           <Row style={{ justifyContent: 'space-between' }}>
-            <Text style={{ color: C.fg, fontSize: 17, fontWeight: '600' }}>{r.name}</Text>
+            <Text style={{ color: C.fg, fontSize: 17, fontFamily: 'Inter_600SemiBold' }}>{r.name}</Text>
             {r.strict && <Text style={{ color: C.warn }}>Strict</Text>}
           </Row>
           <P dim>

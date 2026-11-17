@@ -35,7 +35,7 @@ export default function Setup() {
       </P>
 
       <Card style={{ borderColor: working ? C.acc : C.warn, marginTop: 12 }}>
-        <Text style={{ color: working ? C.acc : C.warn, fontWeight: '600', fontSize: 16 }}>
+        <Text style={{ color: working ? C.acc : C.warn, fontFamily: 'Inter_600SemiBold', fontSize: 16 }}>
           {working ? 'Connected' : 'Not connected yet'}
         </Text>
         <P dim>Last pause received from Shortcuts: {ago(state.lastExternalPause)}.</P>
@@ -56,7 +56,7 @@ export default function Setup() {
       {state.rules.length === 0 && <P dim>Add apps first in the Apps tab.</P>}
       {state.rules.map((r) => (
         <Card key={r.id}>
-          <Text style={{ color: C.fg, fontWeight: '600' }}>{r.name}</Text>
+          <Text style={{ color: C.fg, fontFamily: 'Inter_600SemiBold' }}>{r.name}</Text>
           <Text selectable style={{ color: C.mut, marginVertical: 6 }}>klarity://pause/{r.id}</Text>
           <Button label={copied === r.id ? 'Copied' : 'Copy link'} kind="ghost" onPress={() => copy(r.id)} />
         </Card>
