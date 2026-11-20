@@ -6,7 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { initialState, useStore } from '@/lib/store';
 import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/components/ui';
 import type { AppRule } from '@/lib/logic';
-import { CONFIG } from '@/lib/config';
+import { CONFIG, FREE_APP_LIMIT } from '@/lib/config';
 import { restore, usePlus } from '@/lib/purchases';
 
 const REMINDER_ID = 'klarity-daily';
@@ -70,14 +70,17 @@ export default function Settings() {
       const text = await Clipboard.getStringAsync();
       const j = JSON.parse(text);
       if (j?.klarityBackup !== 1 || !Array.isArray(j.rules) || !j.rules.every(validRule)) throw new Error('bad');
+      // The free plan allows FREE_APP_LIMIT apps; a backup must not be a way around that.
+      const rules: AppRule[] = plus ? j.rules : j.rules.slice(0, FREE_APP_LIMIT);
+      const trimmed = j.rules.length - rules.length;
       update((s) => ({
         ...s,
         onboarded: true,
-        rules: j.rules,
+        rules,
         goalOpens: typeof j.goalOpens === 'number' ? j.goalOpens : s.goalOpens,
         avgSessionMin: typeof j.avgSessionMin === 'number' ? j.avgSessionMin : s.avgSessionMin,
       }));
-      setMsg(`Restored ${j.rules.length} app rules.`);
+      setMsg(trimmed > 0 ? `Restored ${rules.length} app rules. The free plan covers ${FREE_APP_LIMIT} apps; upgrade to Klarity Pro to restore the other ${trimmed}.` : `Restored ${rules.length} app rules.`);
     } catch {
       setMsg('Copy your backup text first, then tap Restore. That text did not look like a Klarity backup.');
     }
