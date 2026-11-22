@@ -30,6 +30,19 @@
           "discord",
           "telegram"
         ]
+      },
+      "privacyManifests": {
+        "NSPrivacyTracking": false,
+        "NSPrivacyTrackingDomains": [],
+        "NSPrivacyCollectedDataTypes": [],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          }
+        ]
       }
     },
     "plugins": [
@@ -45,10 +58,12 @@
     "extra": {
       "eas": {
         "projectId": "6669c37d-a24f-4e6c-b6e3-db2a85778def"
-      }
+      },
+      "privacyPolicyUrl": "https://samayhuf-star.github.io/Klarity/privacy.html"
     },
     "android": {
       "package": "com.samayhuf.klarity"
-    }
+    },
+    "description": "Klarity adds a calm pause before the apps you open on autopilot. Everything stays on your iPhone."
   }
 }
