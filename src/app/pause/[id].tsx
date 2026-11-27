@@ -5,6 +5,7 @@ import * as Haptics from 'expo-haptics';
 import { addEvent, useStore } from '@/lib/store';
 import { Button, C, H1, P, Screen } from '@/components/ui';
 import { SWAPS, decide, fmtDelay, opensToday, promptFor } from '@/lib/logic';
+import { noteSuccess } from '@/lib/reviewPrompt';
 
 type Phase = 'init' | 'wait' | 'choice' | 'swap' | 'blocked' | 'grace' | 'missing' | 'done';
 
@@ -114,6 +115,7 @@ export default function Pause() {
   const skip = (swap?: string) => {
     update((s) => addEvent(s, { t: Date.now(), app: rule.id, kind: 'skip', swap }));
     setPhase('done');
+    noteSuccess(3); // rating prompt after the 3rd time the user chose not to open the app
   };
 
   const prompt = promptFor(rule.id, opensToday(state.events, rule.id, Date.now()));

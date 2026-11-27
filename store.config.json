@@ -1,0 +1,33 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "categories": [
+      "PRODUCTIVITY",
+      "HEALTH_AND_FITNESS"
+    ],
+    "info": {
+      "en-US": {
+        "title": "Klarity: Screen Time Control",
+        "subtitle": "App limit & mindful pause",
+        "description": "Most phone pickups are automatic. Klarity gives you a breath of space before you open the apps that pull you in, so you can choose on purpose.\n\nHOW IT WORKS\nSet up a one-time automation in the Shortcuts app. From then on, when you open a chosen app, Klarity appears first with a short breathing pause and a question. Then you decide: do something else, or carry on.\n\nWHAT YOU GET\n- A pause that gets longer each time you open an app in a day\n- Reflection questions that rotate, so they never go stale\n- Daily open limits per app\n- Strict mode (Klarity Pro)\n- Scheduled focus windows by day and hour, including overnight (Klarity Pro)\n- A grace window so you aren't interrupted again right after you choose to open\n- Swap ideas: a glass of water, a stretch, a message to a friend\n- A streak with a \"life happens\" rule: one slip a week is forgiven\n- Weekly insights: skips, estimated time kept, top triggers, peak hour (30-day history with Klarity Pro)\n- A settings lock with a PIN you can give to someone you trust\n- Back up and restore your rules after a reinstall\n- A setup screen that shows “Not connected yet” until Klarity receives its first pause from Shortcuts, then “Connected”\n\nPRIVATE BY DESIGN\nNo account. No ads. No tracking. Everything stays on your iPhone. Klarity can't see what you do inside other apps.\n\nKLARITY PRO (OPTIONAL)\nThe pause is free for up to 3 apps. Klarity Pro adds unlimited apps (including any app by URL scheme), scheduled focus blocks and Strict mode, and 30-day insights. Choose $2.99/month or $19.99/year, each with a 7-day free trial, or $39.99 once for lifetime access. Subscriptions renew automatically unless cancelled at least 24 hours before the period ends; manage them in your Apple ID settings. Payment is charged to your Apple ID at confirmation of purchase or when the free trial ends.\n\nTerms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\nPrivacy Policy: https://samayhuf-star.github.io/Klarity/privacy.html\n\nGOOD TO KNOW\nKlarity works through Apple's Shortcuts automations. You are always in control and can turn any automation off in Shortcuts at any time.",
+        "keywords": [
+          "focus",
+          "detox",
+          "dopamine",
+          "doomscroll",
+          "blocker",
+          "breathe",
+          "social",
+          "media",
+          "addiction",
+          "stop",
+          "scrolling",
+          "wellbeing"
+        ],
+        "promoText": "A calm pause before the apps you open on autopilot. Free to start, private by design.",
+        "supportUrl": "https://samayhuf-star.github.io/Klarity/support.html",
+        "privacyPolicyUrl": "https://samayhuf-star.github.io/Klarity/privacy.html"
+      }
+    }
+  }
+}
