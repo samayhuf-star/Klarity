@@ -14,6 +14,7 @@ export type State = {
   lastBounce: Record<string, number>;
   lastExternalPause: number | null;
   reminders: boolean;
+  pushTips: boolean; // consent for OneSignal tips and updates (off until the user opts in)
   lockPin: string | null;
   lockUntil: number;
 };
@@ -30,6 +31,7 @@ export const initialState = (): State => ({
   lastBounce: {},
   lastExternalPause: null,
   reminders: false,
+  pushTips: false,
   lockPin: null,
   lockUntil: 0,
 });

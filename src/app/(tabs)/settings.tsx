@@ -8,6 +8,7 @@ import { Button, C, Card, Chip, H1, H2, P, Row, Screen, Stepper } from '@/compon
 import type { AppRule } from '@/lib/logic';
 import { CONFIG, FREE_APP_LIMIT } from '@/lib/config';
 import { restore, usePlus } from '@/lib/purchases';
+import { applyPushConsent } from '@/lib/push';
 
 const REMINDER_ID = 'klarity-daily';
 
@@ -147,6 +148,21 @@ export default function Settings() {
       <H2>Evening check-in</H2>
       <Row>
         <Chip label={state.reminders ? 'On at 8 pm' : 'Off'} on={state.reminders} onPress={() => setReminder(!state.reminders)} />
+      </Row>
+
+      <H2>Tips and updates</H2>
+      <P dim>Occasional habit tips and feature news by push. Off unless you turn it on.</P>
+      <Row>
+        <Chip
+          testID="settings-tips"
+          label={state.pushTips ? 'On' : 'Off'}
+          on={state.pushTips}
+          onPress={() => {
+            const on = !state.pushTips;
+            update((s) => ({ ...s, pushTips: on }));
+            applyPushConsent(on);
+          }}
+        />
       </Row>
 
       <H2>Settings lock</H2>

@@ -3,18 +3,19 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { ActivityIndicator, Alert, Linking, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, C, Card, H1, P, Screen } from '@/components/ui';
-import { CONFIG, FALLBACK_PRICE, PRODUCT_IDS, TRIAL_DAYS, type PlanKind } from '@/lib/config';
+import { CONFIG, FALLBACK_PRICE, PLAN_ORDER, TRIAL_DAYS, type PlanKind } from '@/lib/config';
 import { buy, loadOffer, restore, usePlus, type Offer } from '@/lib/purchases';
 
-const PLANS: PlanKind[] = ['yearly', 'monthly', 'lifetime'];
-const TITLE: Record<PlanKind, string> = { monthly: 'Monthly', yearly: 'Yearly', lifetime: 'Lifetime' };
+const PLANS = PLAN_ORDER;
+const TITLE: Record<PlanKind, string> = { weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly', lifetime: 'Lifetime' };
+const PER: Record<Exclude<PlanKind, 'lifetime'>, string> = { weekly: 'week', monthly: 'month', yearly: 'year' };
 
 /** Price line for a plan card. Trial copy shows unless the App Store says this Apple ID has no trial left. */
 function planLine(kind: PlanKind, offer: Offer, loaded: boolean): string {
   const plan = offer[kind];
   const price = plan?.price ?? FALLBACK_PRICE[kind];
   if (kind === 'lifetime') return `${price} one-time purchase. Yours forever, no trial, no renewal.`;
-  const per = kind === 'yearly' ? 'year' : 'month';
+  const per = PER[kind];
   const trial = plan ? plan.trialDays : loaded ? null : TRIAL_DAYS;
   return trial ? `${trial} days free, then ${price}/${per}, cancel anytime` : `${price}/${per}, cancel anytime`;
 }
@@ -57,7 +58,7 @@ export default function Paywall() {
     }
     setBusy(true);
     try {
-      await buy(PRODUCT_IDS[pick]);
+      await buy(plan);
     } catch {
       Alert.alert('Purchase not completed', 'Nothing was charged. Please try again.');
     } finally {
@@ -76,6 +77,13 @@ export default function Paywall() {
       setBusy(false);
     }
   };
+
+  // Once the store answers, show only the plans it actually sells (e.g. weekly before its product is live).
+  const shown = loaded && Object.keys(offer).length ? PLANS.filter((k) => offer[k]) : PLANS;
+  useEffect(() => {
+    if (!shown.includes(pick) && shown.length) setPick(shown[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown.join(',')]);
 
   const sel = offer[pick];
   const cta = pick === 'lifetime' ? 'Unlock Pro forever' : sel?.trialDays || (!loaded && !sel) ? `Start ${TRIAL_DAYS}-day free trial` : 'Subscribe';
@@ -101,7 +109,7 @@ export default function Paywall() {
           <P>• 30-day insights history</P>
         </Card>
 
-        {PLANS.map((k) => (
+        {shown.map((k) => (
           <Pressable
             key={k}
             testID={`paywall-plan-${k}`}
@@ -111,7 +119,10 @@ export default function Paywall() {
             onPress={() => setPick(k)}
             style={{ backgroundColor: C.card, borderWidth: 2, borderColor: pick === k ? C.acc : C.line, borderRadius: 14, padding: 14, marginBottom: 10 }}
           >
-            <Text style={{ color: C.fg, fontSize: 17, fontWeight: '600' }}>{TITLE[k]}</Text>
+            <Text style={{ color: C.fg, fontSize: 17, fontWeight: '600' }}>
+              {TITLE[k]}
+              {k === 'yearly' ? <Text style={{ color: C.acc, fontSize: 13 }}>  Best value</Text> : null}
+            </Text>
             <Text style={{ color: C.mut, fontSize: 15, marginTop: 4 }}>{planLine(k, offer, loaded)}</Text>
           </Pressable>
         ))}
